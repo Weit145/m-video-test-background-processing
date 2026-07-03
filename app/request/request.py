@@ -14,14 +14,15 @@ class RequestWorker:
     def run(self)->None:
         timer = time.monotonic()
         while True:
+            timer += settings.timer
             try:
-                timer += settings.timer
                 data = self._request()
                 self.writer_file.save_to_file(data)
-                sleep_time = max(0, timer - time.monotonic())
-                time.sleep(sleep_time)
             except Exception as e:
                 logger.error(f"Error: {e}")
+            finally:
+                sleep_time = max(0, timer - time.monotonic())
+                time.sleep(sleep_time)
 
     
     def _request(self)->Any:
